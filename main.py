@@ -2,13 +2,17 @@
 import tornado.ioloop
 import tornado.web
 
-from blog.controller import BlogListHandler
-from blog.controller import BlogReadHandler
+from blog.controller import Blog1Handler
+from blog.controller import Blog2Handler
+from blog.controller import Category1Handler
+from blog.controller import Category2Handler
 
 def make_app():
     return tornado.web.Application([
-        (r'/blogs', BlogListHandler),
-        (r'/blogs/(\d+)', BlogReadHandler),
+        (r'/api/blogs', Blog1Handler),
+        (r'/api/blogs/(\d+)', Blog2Handler),
+        (r'/api/category', Category1Handler),
+        (r'/api/category/(\d+)', Category2Handler)
     ], debug=True)
 
 if __name__ == '__main__':

@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime
+
 from sqlalchemy import create_engine
 from sqlalchemy import Column
 from sqlalchemy import Integer, String, Text, DateTime, \
@@ -30,7 +32,8 @@ class Blog(Base):
     title = Column('title', String(200))
     content = Column('content', Text)
     user_id = Column('user_id', Integer, ForeignKey('users.id'))
-    published_time = Column('published_time', DateTime)
+    create_time = Column('create_time', DateTime, default=datetime.now)
+    published_time = Column('published_time', DateTime, default=None)
     is_published = Column('is_published', Boolean, default=False)
     category_id = Column('category_id', Integer, ForeignKey('category.id'))
     view_count = Column('view_count', Integer, default=0)
@@ -62,9 +65,22 @@ class User(Base):
     email = Column('email', String(200))
     password = Column('password', String(500))
     phone_number = Column('phone_number', String(50))
-    sign_up_time = Column('sign_up_time', DateTime)
-    last_login_time = Column('last_login_time', DateTime)
+    sign_up_time = Column('sign_up_time', DateTime, default=datetime.now)
+    last_login_time = Column('last_login_time', DateTime, default=datetime.now)
     blog= relationship('Blog', backref='user')
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'age': self.age,
+            'gender': self.gender,
+            'email': self.email,
+            'password': self.password,
+            'phone_number': self.phone_number,
+            'sign_up_time': self.sign_up_time,
+            'last_login_time': self.last_login_time
+        }
 
 
 class Label(Base):
@@ -73,6 +89,12 @@ class Label(Base):
     id = Column('id', Integer, primary_key=True)
     name = Column('name', String(200))
 
+    def serialize(self):
+        return {
+            'id': self.id,
+            'name': self.name
+        }
+
 
 class Category(Base):
     __tablename__ = 'category'
@@ -80,3 +102,9 @@ class Category(Base):
     id = Column('id', Integer, primary_key=True)
     name = Column('name', String(200))
     blog = relationship('Blog', backref='category')
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'name': self.name
+        }

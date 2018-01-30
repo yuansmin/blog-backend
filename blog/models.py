@@ -76,7 +76,6 @@ class User(Base):
             'age': self.age,
             'gender': self.gender,
             'email': self.email,
-            'password': self.password,
             'phone_number': self.phone_number,
             'sign_up_time': self.sign_up_time,
             'last_login_time': self.last_login_time

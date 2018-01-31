@@ -1,44 +1,30 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
 
-from sqlalchemy import create_engine
-from sqlalchemy import Column
-from sqlalchemy import Integer, String, Text, DateTime, \
-                    Boolean, ForeignKey, SmallInteger
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.schema import Table
+from app import db
 
 
-Engine = create_engine('sqlite:////Users/fancy/work/learn/python/blog/blog.db')
-Session = sessionmaker(bind=Engine)
-
-
-Base = declarative_base()
-
-
-test = Table(
-    'blog_label', Base.metadata,
-    Column('blog_id', Integer, ForeignKey('blogs.id')),
-    Column('label_id', Integer, ForeignKey('labels.id'))
+blog_label = db.Table(
+    'blog_label',
+    db.Column('blog_id', db.Integer, db.ForeignKey('blogs.id')),
+    db.Column('label_id', db.Integer, db.ForeignKey('labels.id'))
     )
 
 
-class Blog(Base):
+class Blog(db.Model):
     __tablename__ = 'blogs'
 
-    id = Column('id', Integer, primary_key=True)
-    title = Column('title', String(200))
-    content = Column('content', Text)
-    user_id = Column('user_id', Integer, ForeignKey('users.id'))
-    create_time = Column('create_time', DateTime, default=datetime.now)
-    published_time = Column('published_time', DateTime, default=None)
-    is_published = Column('is_published', Boolean, default=False)
-    category_id = Column('category_id', Integer, ForeignKey('category.id'))
-    view_count = Column('view_count', Integer, default=0)
-    good_count = Column('good_count', Integer, default=0)
-    labels = relationship('Label', secondary=test)
+    id = db.Column('id', db.Integer, primary_key=True)
+    title = db.Column('title', db.String(200))
+    content = db.Column('content', db.Text)
+    user_id = db.Column('user_id', db.Integer, db.ForeignKey('users.id'))
+    create_time = db.Column('create_time', db.DateTime, default=datetime.now)
+    published_time = db.Column('published_time', db.DateTime, default=None)
+    is_published = db.Column('is_published', db.Boolean, default=False)
+    category_id = db.Column('category_id', db.Integer, db.ForeignKey('category.id'))
+    view_count = db.Column('view_count', db.Integer, default=0)
+    good_count = db.Column('good_count', db.Integer, default=0)
+    labels = db.relationship('Label', secondary=blog_label)
 
     def serialize(self):
         return {
@@ -55,38 +41,11 @@ class Blog(Base):
         }
 
 
-class User(Base):
-    __tablename__ = 'users'
-
-    id = Column('id', Integer, primary_key=True)
-    name = Column('name', String(200))
-    age = Column('age', Integer)
-    gender = Column('gender', SmallInteger)   # (0, man) (1, woman)
-    email = Column('email', String(200))
-    password = Column('password', String(500))
-    phone_number = Column('phone_number', String(50))
-    sign_up_time = Column('sign_up_time', DateTime, default=datetime.now)
-    last_login_time = Column('last_login_time', DateTime, default=datetime.now)
-    blog= relationship('Blog', backref='user')
-
-    def serialize(self):
-        return {
-            'id': self.id,
-            'name': self.name,
-            'age': self.age,
-            'gender': self.gender,
-            'email': self.email,
-            'phone_number': self.phone_number,
-            'sign_up_time': self.sign_up_time,
-            'last_login_time': self.last_login_time
-        }
-
-
-class Label(Base):
+class Label(db.Model):
     __tablename__ = 'labels'
 
-    id = Column('id', Integer, primary_key=True)
-    name = Column('name', String(200))
+    id = db.Column('id', db.Integer, primary_key=True)
+    name = db.Column('name', db.String(200))
 
     def serialize(self):
         return {
@@ -95,12 +54,12 @@ class Label(Base):
         }
 
 
-class Category(Base):
+class Category(db.Model):
     __tablename__ = 'category'
 
-    id = Column('id', Integer, primary_key=True)
-    name = Column('name', String(200))
-    blog = relationship('Blog', backref='category')
+    id = db.Column('id', db.Integer, primary_key=True)
+    name = db.Column('name', db.String(200))
+    blog = db.relationship('Blog', backref='category')
 
     def serialize(self):
         return {

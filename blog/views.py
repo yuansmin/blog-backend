@@ -72,5 +72,18 @@ def delete_blog(id):
 @app.route('/api/category', methods=['GET'])
 @json_response
 def list_category():
-    Category.query.order_by(desc()).all()
+    cgs = Category.query.order_by(desc()).all()
+    res = {
+        'items': [cg.serialize() for cg in cgs]
+    }
+    return res, 200
 
+
+@app.route('/api/labels', methods=['GET'])
+@json_response
+def list_labels():
+    labels = Label.query.order_by(desc()).all()
+    res = {
+        'items': [label.serialize() for label in labels]
+    }
+    return res, 200

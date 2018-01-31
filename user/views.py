@@ -9,7 +9,6 @@ from flask import abort
 from flask_restful import reqparse
 from flask_login import login_user
 from flask_login import login_required
-from flask_login import current_user
 from sqlalchemy import desc
 
 from app import app
@@ -31,11 +30,13 @@ def login():
 
     user.last_login = datetime.now()
     db.session.commit()
-    login_user(user)
+    # TODO  check if use is active
+    result = login_user(user)
     return user.serialize(), 200
 
 
 @app.route('/api/users', methods=['GET'])
+@login_required
 @json_response
 def list_users():
     users = User.query.order_by(desc("sign_up_time")).all()

@@ -46,6 +46,8 @@ class Label(db.Model):
 
     id = db.Column('id', db.Integer, primary_key=True)
     name = db.Column('name', db.String(200))
+    user_id = db.Column('user_id', db.Integer)
+    create_time = db.Column('create_time', db.DateTime, default=datetime.now)
 
     def serialize(self):
         return {
@@ -59,6 +61,9 @@ class Category(db.Model):
 
     id = db.Column('id', db.Integer, primary_key=True)
     name = db.Column('name', db.String(200))
+    index = db.Column('index', db.Integer)
+    create_time = db.Column('create_time', db.DateTime, default=datetime.now)
+    user_id = db.Column('user_id', db.Integer)
     blog = db.relationship('Blog', backref='category')
 
     def serialize(self):

@@ -14,6 +14,7 @@ from sqlalchemy import desc
 from app import app
 from app import db
 from app import json_response
+from app import APIException
 from models import User
 
 
@@ -26,7 +27,7 @@ def login():
         parse_args()
     user = User.query.filter_by(email=args['email']).one_or_none()
     if not user or not user.check_passowrd(args['password']):
-        abort(400, description=u'用户名或密码错误')
+        raise APIException(u'用户名或密码错误', 400)
 
     user.last_login = datetime.now()
     db.session.commit()
@@ -57,7 +58,7 @@ def signup():
         parse_args()
     user = User.query.filter_by(email=args['email']).one_or_none()
     if user:
-        abort(400, description=u'该邮箱已被注册')
+        raise APIException(u'该邮箱已被注册', 400)
 
     user = User(**args)
     db.session.add(user)

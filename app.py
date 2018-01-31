@@ -48,5 +48,20 @@ def json_response(f):
 
     return wrapper
 
+
+class APIException(Exception):
+
+    def __init__(self, message, code=500):
+        super(APIException, self).__init__(message)
+        self.message = message
+        self.code = code
+
+
+@app.errorhandler(APIException)
+def error_handler(e):
+    res = {'message': e.message, 'code': e.code}
+    return json.dumps(res), e.code
+
+
 from blog import views
 from user import views

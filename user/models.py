@@ -33,6 +33,7 @@ class User(UserMixin, db.Model):
     def check_passowrd(self, password):
         return check_password_hash(self._password_hash, password)
 
+    @staticmethod
     def format_time(self, time):
         return time.strftime('%Y-%m-%d %H:%M:%S') if time else None
 

@@ -26,14 +26,18 @@ class Blog(db.Model):
     good_count = db.Column('good_count', db.Integer, default=0)
     labels = db.relationship('Label', secondary=blog_label)
 
+    @staticmethod
+    def format_time(time):
+        return time.strftime('%Y-%m-%d %H:%M:%S') if time else None
+
     def serialize(self):
         return {
             'id': self.id,
             'title': self.title,
             'content': self.content,
             'user_id': self.user_id,
-            'published_time': self.published_time.strftime('%Y-%m-%d %H:%M:%S') \
-                                                    if self.published_time else None,
+            'create_time': self.format_time(self.create_time),
+            'published_time': self.format_time(self.published_time),
             'is_published': self.is_published,
             'category_id': self.category_id,
             'view_count': self.view_count,

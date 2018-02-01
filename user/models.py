@@ -19,7 +19,7 @@ class User(UserMixin, db.Model):
     phone_number = db.Column('phone_number', db.String(50), unique=True)
     sign_up_time = db.Column('sign_up_time', db.DateTime, default=datetime.now)
     last_login_time = db.Column('last_login_time', db.DateTime, default=datetime.now)
-    active = db.Column('active', db.Boolean, default=False)
+    active = db.Column('active', db.Boolean, default=True)
     blog= db.relationship('Blog', backref='user')
 
     @property

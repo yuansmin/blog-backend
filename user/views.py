@@ -55,6 +55,8 @@ def signup():
         add_argument('password', required=True).\
         add_argument('name').\
         add_argument('phone_number').\
+        add_argument('gender', type=int).\
+        add_argument('age', type=int).\
         parse_args()
     user = User.query.filter_by(email=args['email']).one_or_none()
     if user:

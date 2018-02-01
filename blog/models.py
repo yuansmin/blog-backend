@@ -45,6 +45,27 @@ class Blog(db.Model):
         }
 
 
+class Comment(db.Model):
+    __tablename__ = 'comment'
+
+    id = db.Column('id', db.Integer, primary_key=True)
+    content = db.Column('content', db.String(500))
+    user_id = db.Column('user_id', db.Integer)
+    create_time = db.Column('create_time', db.DateTime, default=datetime.now)
+
+    @staticmethod
+    def format_time(time):
+        return time.strftime('%Y-%m-%d %H:%M:%S') if time else None
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'use_id': self.user_id,
+            'create_time': self.format_time(self.create_time)
+        }
+
+
 class Label(db.Model):
     __tablename__ = 'labels'
 
@@ -53,10 +74,16 @@ class Label(db.Model):
     user_id = db.Column('user_id', db.Integer)
     create_time = db.Column('create_time', db.DateTime, default=datetime.now)
 
+    @staticmethod
+    def format_time(time):
+        return time.strftime('%Y-%m-%d %H:%M:%S') if time else None
+
     def serialize(self):
         return {
             'id': self.id,
-            'name': self.name
+            'name': self.name,
+            'use_id': self.user_id,
+            'create_time': self.format_time(self.create_time)
         }
 
 
@@ -70,8 +97,14 @@ class Category(db.Model):
     user_id = db.Column('user_id', db.Integer)
     blog = db.relationship('Blog', backref='category')
 
+    @staticmethod
+    def format_time(time):
+        return time.strftime('%Y-%m-%d %H:%M:%S') if time else None
+
     def serialize(self):
         return {
             'id': self.id,
-            'name': self.name
+            'name': self.name,
+            'use_id': self.user_id,
+            'create_time': self.format_time(self.create_time)
         }

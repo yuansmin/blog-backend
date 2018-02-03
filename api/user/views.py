@@ -5,7 +5,6 @@ __mtime__ = '2018/1/31'
 """
 from datetime import datetime
 
-from flask import abort
 from flask_login import current_user
 from flask_login import login_required
 from flask_login import login_user
@@ -41,7 +40,7 @@ def login():
 @api.route('/users/logout', methods=['GET'])
 @json_response
 def logout():
-    logout_user(current_user)
+    logout_user()
 
 
 @api.route('/users', methods=['GET'])
@@ -75,4 +74,22 @@ def signup():
     db.session.commit()
 
     return user.serialize(), 200
+
+
+@api.route('/users/password', methods=['POST'])
+@login_required
+@json_response
+def change_password():
+    args = reqparse.RequestParser().\
+        add_argument('old_password', required=True).\
+        add_argument('new_password', required=True).\
+        parse_args()
+
+    if not current_user.check_passowrd(args['old_password']):
+        raise APIException(u'密码错误', 400)
+
+    current_user.password = args['new_password']
+    db.session.commit()
+
+    logout_user()
 

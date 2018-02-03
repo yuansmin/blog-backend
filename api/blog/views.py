@@ -85,7 +85,7 @@ def delete_blog(id):
 @login_required
 @json_response
 def list_category():
-    cgs = Category.query.order_by(desc()).all()
+    cgs = Category.query.order_by('index').all()
     res = {
         'items': [cg.serialize() for cg in cgs]
     }

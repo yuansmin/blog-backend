@@ -8,19 +8,18 @@ Database
     Sqlite3
 
 TODO:
--[] blog、comment
--[] config db, port
--[] user permssion
--[] active user
--[] change password api
--[] change email api
--[] blog list optimise
--[] image support
--[] websockt message
+-[ ] blog、comment
+-[x] config db, port
+-[ ] user permssion
+-[ ] active user
+-[x] change password api
+-[ ] change email api
+-[ ] blog list optimise
+-[ ] image support
+-[ ] websockt message
 
 Dev Enviroment Set:
 ```
-
 pip install -r requirements.txt
 ```
 

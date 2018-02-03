@@ -8,6 +8,8 @@ from api import api
 from app import APIException
 from app import db
 from app import json_response
+from .blog import create_category
+from .blog import CategoryManager
 from .models import Blog
 from .models import Category
 from .models import Comment
@@ -17,6 +19,14 @@ from .models import Label
 @api.route('/blogs')
 @json_response
 def list_blogs():
+    args = reqparse.RequestParser().\
+        add_argument('category_id', type=int).\
+        add_argument('labels', action='append', defalt=[]).\
+        add_argument('user_id', type=int, default=None).\
+        add_argument('keywords', action='append', default=[]).\
+        add_argument('offset', type=int, default=0).\
+        add_argument('limit', type=int, default=20)
+
     blogs = Blog.query.order_by(desc('create_time')).all()
     res = {
         'items': [blog.serialize() for blog in blogs]
@@ -75,10 +85,9 @@ def update_blog(id):
 
 @api.route('/blogs/<int:id>', methods=['DELETE'])
 @login_required
-@json_response
 def delete_blog(id):
     Blog.query.filter_by(id=id).delete()
-    return
+    db.session.commit()
 
 
 @api.route('/category', methods=['GET'])
@@ -90,6 +99,25 @@ def list_category():
         'items': [cg.serialize() for cg in cgs]
     }
     return res, 200
+
+
+@api.route('/category', methods=['POST'])
+@login_required
+@json_response
+def create_category_api():
+    args = reqparse.RequestParser().\
+        add_argument('name', required=True).\
+        add_argument('index', default=999).\
+        parse_args()
+
+    return create_category(**args), 200
+
+
+@api.route('/category/<int:id>', methods=['DELETE'])
+@login_required
+@json_response
+def delete_category(id):
+    return CategoryManager.delete(id=id), 200
 
 
 @api.route('/labels', methods=['GET'])
@@ -138,10 +166,9 @@ def update_label(id):
 
 @api.route('/labels/<int:id>', methods=['DELETE'])
 @login_required
-@json_response
 def delete_label(id):
     Label.query.filter_by(id=id).delete()
-    return
+    db.session.commit()
 
 
 @api.route('/comments', methods=['GET'])
@@ -149,7 +176,7 @@ def delete_label(id):
 def list_comments():
     args = reqparse.RequestParser().\
         add_argument('blog_id', type=int, required=True).\
-        add_argument('limit', type=int, default=10).\
+        add_argument('limit', type=int, default=20).\
         add_argument('offset', type=int, default=0).\
         parse_args()
     comments = Comment.query.\
@@ -193,7 +220,7 @@ def create_comment(id):
         add_argument('content', required=True).\
         parse_args()
     q = Blog.query.filter_by(id=id)
-    res = Blog.query.filter(q.exists()).scalar()
+    res = db.session.query(Blog.id).filter(q.exists()).first()
     if not res:
         raise APIException('blog not fount', 404)
 
@@ -208,8 +235,7 @@ def create_comment(id):
 
 @api.route('/comments/<int:id>', methods=['DELETE'])
 @login_required
-@json_response
 def delete_comment(id):
     Comment.query.filter_by(id=id).delete()
-    return
+    db.session.commit()
 

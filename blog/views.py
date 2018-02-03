@@ -12,6 +12,7 @@ from app import db
 from app import json_response
 from .models import Blog
 from .models import Category
+from .models import Comment
 from .models import Label
 
 
@@ -143,3 +144,74 @@ def update_label(id):
 def delete_label(id):
     Label.query.filter_by(id=id).delete()
     return
+
+
+@app.route('/api/comments', methods=['GET'])
+@json_response
+def list_comments():
+    args = reqparse.RequestParser().\
+        add_argument('blog_id', type=int, required=True).\
+        add_argument('limit', type=int, default=10).\
+        add_argument('offset', type=int, default=0).\
+        parse_args()
+    comments = Comment.query.\
+        filter_by(blog_id=args['blog_id']).\
+        order_by(desc('create_time')).\
+        offset(args['offset']).\
+        limit(args['limit']).\
+        all()
+
+    res = {
+        'items': [c.serialize() for c in comments]
+    }
+    return res, 200
+
+
+@app.route('/api/blogs/<int:id>/comments', methods=['GET'])
+@json_response
+def list_blog_comments(id):
+    args = reqparse.RequestParser().\
+        add_argument('limit', type=int, default=10).\
+        add_argument('offset', type=int, default=0).\
+        parse_args()
+
+    comments = Comment.query.\
+        filter_by(blog_id=id).\
+        offset(args['offset']).\
+        limit(args['limit']).\
+        all()
+    res = {
+        'items': [c.serialize() for c in comments]
+    }
+
+    return res, 200
+
+
+@app.route('/api/blogs/<int:id>/comments', methods=['POST'])
+@login_required
+@json_response
+def create_comment(id):
+    args = reqparse.RequestParser().\
+        add_argument('content', required=True).\
+        parse_args()
+    q = Blog.query.filter_by(id=id)
+    res = Blog.query.filter(q.exists()).scalar()
+    if not res:
+        raise APIException('blog not fount', 404)
+
+    comment = Comment(**args)
+    comment.user_id = current_user.id
+    comment.blog_id = id
+    db.session.add(comment)
+    db.session.commit()
+
+    return comment.serialize(), 201
+
+
+@app.route('/api/comments/<int:id>', methods=['DELETE'])
+@login_required
+@json_response
+def delete_comment(id):
+    Comment.query.filter_by(id=id).delete()
+    return
+

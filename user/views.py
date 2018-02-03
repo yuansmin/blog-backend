@@ -6,9 +6,11 @@ __mtime__ = '2018/1/31'
 from datetime import datetime
 
 from flask import abort
-from flask_restful import reqparse
-from flask_login import login_user
+from flask_login import current_user
 from flask_login import login_required
+from flask_login import login_user
+from flask_login import logout_user
+from flask_restful import reqparse
 from sqlalchemy import desc
 
 from app import app
@@ -34,6 +36,12 @@ def login():
     # TODO  check if use is active
     result = login_user(user)
     return user.serialize(), 200
+
+
+@app.route('/api/users/logout', methods=['GET'])
+@json_response
+def logout():
+    logout_user(current_user)
 
 
 @app.route('/api/users', methods=['GET'])

@@ -6,13 +6,16 @@ Web Framework
     Flask
 Database
     Sqlite3
-    
+
 TODO:
-1. user permssion
-2. active user
-3. change password api
-4. change email api
-5. add blog comment
+1. blog、comment
+2. user permssion
+3. active user
+4. change password api
+5. change email api
+6. blog list optimise
+7. image support
+8. websockt message
 
 Dev Enviroment Set:
 ```
@@ -24,8 +27,8 @@ Run:
 ```
 python manage.py runserver
 ```
-    
-    
+
+
 
 API:
 
@@ -44,7 +47,7 @@ GET /api/blogs/<id>
 3. create blog
 
 POST /api/blogs
-    
+
 Req:
 
 ```
@@ -58,7 +61,7 @@ Req:
 4. update blog
 
 PUT /api/blogs/<id>
-    
+
 Req:
 
 ```

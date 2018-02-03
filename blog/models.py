@@ -51,6 +51,8 @@ class Comment(db.Model):
     id = db.Column('id', db.Integer, primary_key=True)
     content = db.Column('content', db.String(500))
     user_id = db.Column('user_id', db.Integer)
+    blog_id = db.Column('blog_id', db.Integer)
+    vote_count = db.Column('good_count', db.Integer, default=0)    # 点赞数, 可加可减
     create_time = db.Column('create_time', db.DateTime, default=datetime.now)
 
     @staticmethod
@@ -60,8 +62,9 @@ class Comment(db.Model):
     def serialize(self):
         return {
             'id': self.id,
-            'name': self.name,
+            'content': self.content,
             'use_id': self.user_id,
+            'blog_id': self.blog_id,
             'create_time': self.format_time(self.create_time)
         }
 

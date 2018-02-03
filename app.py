@@ -63,6 +63,12 @@ def error_handler(e):
     return json.dumps(res), e.code
 
 
+@app.errorhandler(Exception)
+def internal_err_handler(e):
+    res = {'message': e.message, 'code': 500}
+    return json.dumps(res), 500
+
+
 from api import api
 
 app.register_blueprint(api)

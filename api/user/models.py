@@ -20,6 +20,7 @@ class User(UserMixin, db.Model):
     sign_up_time = db.Column('sign_up_time', db.DateTime, default=datetime.now)
     last_login_time = db.Column('last_login_time', db.DateTime, default=datetime.now)
     active = db.Column('active', db.Boolean, default=True)
+    is_admin = db.Column('is_admin', db.Boolean, default=False)
     blog= db.relationship('Blog', backref='user')
 
     @property
@@ -60,6 +61,7 @@ class User(UserMixin, db.Model):
             'gender': self.gender,
             'email': self.email,
             'phone_number': self.phone_number,
+            'is_admin': self.is_admin,
             'sign_up_time': self.format_time(self.sign_up_time),
             'last_login_time': self.format_time(self.last_login_time)
         }

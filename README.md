@@ -8,19 +8,20 @@ Database
     Sqlite3
 
 TODO:
-1. blog、comment
-2. user permssion
-3. active user
-4. change password api
-5. change email api
-6. blog list optimise
-7. image support
-8. websockt message
+-[] blog、comment
+-[] config db, port
+-[] user permssion
+-[] active user
+-[] change password api
+-[] change email api
+-[] blog list optimise
+-[] image support
+-[] websockt message
 
 Dev Enviroment Set:
 ```
 
-pip install requirements.txt
+pip install -r requirements.txt
 ```
 
 Run:
@@ -182,6 +183,22 @@ req
 4. Delete User
 
 DELETE /api/users/<id>
+
+5. Login
+
+POST /api/users/login
+
+req：
+```json
+{
+  "email": "xxxxx",
+  "password": "xxx"
+}
+```
+
+6. Logout
+
+GET /api/users/logout
 
 
 

@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
-import json
-
 from sqlalchemy import desc
 from flask_restful import reqparse
 from flask_login import current_user
 from flask_login import login_required
 
-from app import app
+from api import api
 from app import APIException
 from app import db
 from app import json_response
@@ -16,7 +14,7 @@ from .models import Comment
 from .models import Label
 
 
-@app.route('/api/blogs')
+@api.route('/blogs')
 @json_response
 def list_blogs():
     blogs = Blog.query.order_by(desc('create_time')).all()
@@ -26,7 +24,7 @@ def list_blogs():
     return res, 200
 
 
-@app.route('/api/blogs', methods=['POST'])
+@api.route('/blogs', methods=['POST'])
 @login_required
 @json_response
 def create_blog():
@@ -43,7 +41,7 @@ def create_blog():
     return blog.serialize(), 201
 
 
-@app.route('/api/blogs/<int:id>', methods=['GET'])
+@api.route('/blogs/<int:id>', methods=['GET'])
 @json_response
 def read_blog(id):
     blog = Blog.query.filter_by(id=id).one_or_none()
@@ -53,7 +51,7 @@ def read_blog(id):
     return blog.serialize(), 200
 
 
-@app.route('/api/blogs/<int:id>', methods=['POST'])
+@api.route('/blogs/<int:id>', methods=['POST'])
 @login_required
 @json_response
 def update_blog(id):
@@ -75,7 +73,7 @@ def update_blog(id):
     return blog.serialize(), 200
 
 
-@app.route('/api/blogs/<int:id>', methods=['DELETE'])
+@api.route('/blogs/<int:id>', methods=['DELETE'])
 @login_required
 @json_response
 def delete_blog(id):
@@ -83,7 +81,7 @@ def delete_blog(id):
     return
 
 
-@app.route('/api/category', methods=['GET'])
+@api.route('/category', methods=['GET'])
 @login_required
 @json_response
 def list_category():
@@ -94,7 +92,7 @@ def list_category():
     return res, 200
 
 
-@app.route('/api/labels', methods=['GET'])
+@api.route('/labels', methods=['GET'])
 @login_required
 @json_response
 def list_labels():
@@ -105,7 +103,7 @@ def list_labels():
     return res, 200
 
 
-@app.route('/api/labels', methods=['POST'])
+@api.route('/labels', methods=['POST'])
 @login_required
 @json_response
 def create_label():
@@ -120,7 +118,7 @@ def create_label():
     return label.serialize(), 201
 
 
-@app.route('/api/labels/<int:id>', methods=['POST'])
+@api.route('/labels/<int:id>', methods=['POST'])
 @login_required
 @json_response
 def update_label(id):
@@ -138,7 +136,7 @@ def update_label(id):
     return label.serialize(), 200
 
 
-@app.route('/api/labels/<int:id>', methods=['DELETE'])
+@api.route('/labels/<int:id>', methods=['DELETE'])
 @login_required
 @json_response
 def delete_label(id):
@@ -146,7 +144,7 @@ def delete_label(id):
     return
 
 
-@app.route('/api/comments', methods=['GET'])
+@api.route('/comments', methods=['GET'])
 @json_response
 def list_comments():
     args = reqparse.RequestParser().\
@@ -167,7 +165,7 @@ def list_comments():
     return res, 200
 
 
-@app.route('/api/blogs/<int:id>/comments', methods=['GET'])
+@api.route('/blogs/<int:id>/comments', methods=['GET'])
 @json_response
 def list_blog_comments(id):
     args = reqparse.RequestParser().\
@@ -187,7 +185,7 @@ def list_blog_comments(id):
     return res, 200
 
 
-@app.route('/api/blogs/<int:id>/comments', methods=['POST'])
+@api.route('/blogs/<int:id>/comments', methods=['POST'])
 @login_required
 @json_response
 def create_comment(id):
@@ -208,7 +206,7 @@ def create_comment(id):
     return comment.serialize(), 201
 
 
-@app.route('/api/comments/<int:id>', methods=['DELETE'])
+@api.route('/comments/<int:id>', methods=['DELETE'])
 @login_required
 @json_response
 def delete_comment(id):

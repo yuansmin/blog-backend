@@ -63,5 +63,6 @@ def error_handler(e):
     return json.dumps(res), e.code
 
 
-from blog import views
-from user import views
+from api import api
+
+app.register_blueprint(api)

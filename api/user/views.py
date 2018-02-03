@@ -13,14 +13,14 @@ from flask_login import logout_user
 from flask_restful import reqparse
 from sqlalchemy import desc
 
-from app import app
+from api import api
 from app import db
 from app import json_response
 from app import APIException
 from models import User
 
 
-@app.route('/api/users/login', methods=['POST'])
+@api.route('/users/login', methods=['POST'])
 @json_response
 def login():
     args = reqparse.RequestParser().\
@@ -38,13 +38,13 @@ def login():
     return user.serialize(), 200
 
 
-@app.route('/api/users/logout', methods=['GET'])
+@api.route('/users/logout', methods=['GET'])
 @json_response
 def logout():
     logout_user(current_user)
 
 
-@app.route('/api/users', methods=['GET'])
+@api.route('/users', methods=['GET'])
 @login_required
 @json_response
 def list_users():
@@ -55,7 +55,7 @@ def list_users():
     return res, 200
 
 
-@app.route('/api/users', methods=['POST'])
+@api.route('/users', methods=['POST'])
 @json_response
 def signup():
     args = reqparse.RequestParser().\

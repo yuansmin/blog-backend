@@ -24,6 +24,11 @@ login_manager.init_app(app)
 mail = Mail(app)
 cache = Cache(app, config={'CACHE_TYPE': app.config['CACHE_TYPE']})
 
+def json_dumps(data, **kw):
+    kw.setdefault('ensure_ascii', False)
+    return json.dumps(data, **kw)
+
+
 def json_response(f):
 
     @wraps(f)
@@ -32,14 +37,14 @@ def json_response(f):
         res_code = 200
         res_headers = dict()
         if isinstance(res, dict) or isinstance(res, list):
-            res_body = json.dumps(res, indent=4)
+            res_body = json_dumps(res)
         elif isinstance(res, tuple):
             if len(res) == 2:
                 res_body, res_code = res
             else:
                 res_body, res_code, res_headers = res
 
-            res_body = json.dumps(res_body, indent=4)
+            res_body = json_dumps(res_body)
         else:
             res_body = res
 
@@ -60,13 +65,13 @@ class APIException(Exception):
 @app.errorhandler(APIException)
 def error_handler(e):
     res = {'message': e.message, 'code': e.code}
-    return json.dumps(res), e.code
+    return json_dumps(res), e.code
 
 
 @app.errorhandler(Exception)
 def internal_err_handler(e):
     res = {'message': e.message, 'code': 500}
-    return json.dumps(res), 500
+    return json_dumps(res), 500
 
 
 from api import api

@@ -7,6 +7,28 @@ Web Framework
 Database
     Sqlite3
 
+Dev Enviroment Set:
+```
+pip install -r requirements.txt
+```
+
+Init Datebase
+```shell
+python manage.py db init  # use sqlite3 default
+```
+
+Apply Mode change to database
+```
+python manage.py db migrate
+python manage.py db upgrade
+
+```
+
+Run:
+```
+python manage.py runserver  # running on 127.0.0.1:5000 default 
+```
+
 TODO:
 -[ ] blog、comment
 -[x] config db, port
@@ -17,17 +39,6 @@ TODO:
 -[ ] blog list optimise
 -[ ] image support
 -[ ] websockt message
-
-Dev Enviroment Set:
-```
-pip install -r requirements.txt
-```
-
-Run:
-```
-python manage.py runserver
-```
-
 
 
 API:

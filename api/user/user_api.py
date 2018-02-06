@@ -3,16 +3,12 @@
 __author__ = 'fancy'
 __mtime__ = '2018/1/31'
 """
-from flask_login import current_user
 from flask_login import login_required
 from flask_login import logout_user
 from flask_restful import reqparse
 
 from api import api
-from app import db
 from app import json_response
-from app import APIException
-from .models import User
 from .user import UserManager
 
 

@@ -8,8 +8,12 @@ from api import api
 from app import APIException
 from app import db
 from app import json_response
+from .blog import create_blog
 from .blog import create_category
 from .blog import CategoryManager
+from .blog import list_blogs
+from .blog import read_blog
+from .blog import update_blog
 from .models import Blog
 from .models import Category
 from .models import Comment
@@ -18,69 +22,48 @@ from .models import Label
 
 @api.route('/blogs')
 @json_response
-def list_blogs():
+def list_blogs_api():
     args = reqparse.RequestParser().\
         add_argument('category_id', type=int).\
         add_argument('labels', action='append', default=[]).\
         add_argument('user_id', type=int, default=None).\
         add_argument('keywords', action='append', default=[]).\
         add_argument('offset', type=int, default=0).\
-        add_argument('limit', type=int, default=20)
+        add_argument('limit', type=int, default=20).\
+        parse_args()
 
-    blogs = Blog.query.order_by(desc('create_time')).all()
-    res = {
-        'items': [blog.serialize() for blog in blogs]
-    }
-    return res, 200
+    return list_blogs(**args), 200
 
 
 @api.route('/blogs', methods=['POST'])
 @login_required
 @json_response
-def create_blog():
+def create_blog_api():
     args = reqparse.RequestParser().\
         add_argument('title').\
         add_argument('content').\
         add_argument('category_id', type=int).\
         parse_args()
-    blog = Blog(**args)
-    blog.user_id = current_user.id
-    db.session.add(blog)
-    db.session.commit()
-
-    return blog.serialize(), 201
+    return create_blog(**args), 201
 
 
 @api.route('/blogs/<int:blog_id>', methods=['GET'])
 @json_response
-def read_blog(blog_id):
-    blog = Blog.query.filter_by(id=blog_id).one_or_none()
-    if not blog:
-        raise APIException('blog not found', 404)
-
-    return blog.serialize(), 200
+def read_blog_api(blog_id):
+    return read_blog(blog_id), 200
 
 
 @api.route('/blogs/<int:blog_id>', methods=['POST'])
 @login_required
 @json_response
-def update_blog(blog_id):
-    blog = Blog.query.filter_by(id=blog_id).one_or_none()
-    if not blog:
-        raise APIException('blog not found', 404)
-
+def update_blog_api(blog_id):
     args = reqparse.RequestParser().\
         add_argument('title', required=False).\
         add_argument('content', required=False).\
         add_argument('category_id', required=False).\
         parse_args()
-    if not args:
-        return blog.serialize(), 200
 
-    for k in args:
-        setattr(blog, k, args[k])
-    db.session.commit()
-    return blog.serialize(), 200
+    return update_blog(blog_id, **args), 200
 
 
 @api.route('/blogs/<int:blog_id>', methods=['DELETE'])

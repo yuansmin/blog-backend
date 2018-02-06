@@ -62,16 +62,22 @@ class APIException(Exception):
         self.code = code
 
 
+def err_message(msg, code):
+    return json_dumps({'message': msg, 'code': code})
+
+
 @app.errorhandler(APIException)
 def error_handler(e):
-    res = {'message': e.message, 'code': e.code}
-    return json_dumps(res), e.code
+    return err_message(e.message, e.code), e.code
 
 
 @app.errorhandler(Exception)
 def internal_err_handler(e):
-    res = {'message': e.message, 'code': 500}
-    return json_dumps(res), 500
+    return err_message(e.message, 500), 500
+
+@app.errorhandler(401)
+def unauthorized_handler(e):
+    return err_message(u'未登录！请先登录', 401), 401
 
 
 from api import api

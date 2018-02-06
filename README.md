@@ -30,7 +30,7 @@ python manage.py runserver  # running on 127.0.0.1:5000 default
 ```
 
 TODO:
--[ ] blog、comment
+-[x] blog、comment
 -[x] config db, port
 -[ ] user permssion
 -[ ] active user

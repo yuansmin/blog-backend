@@ -49,7 +49,7 @@ def create_blog_api():
 @api.route('/blogs/<int:blog_id>', methods=['GET'])
 @json_response
 def read_blog_api(blog_id):
-    return BlogManager.read(blog_id), 200
+    return BlogManager.read(blog_id).serialize() , 200
 
 
 @api.route('/blogs/<int:blog_id>', methods=['POST'])

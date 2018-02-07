@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from sqlalchemy import desc
-from sqlalchemy import exists
-from flask_login import current_user
 
 from .models import Blog
 from .models import Category
+from .models import Comment
+from .models import Label
 from app import APIException
 from app import db
 
@@ -29,49 +29,51 @@ class BlogManager(object):
         return bool(res)
 
     @classmethod
+    def delete(cls, blog_id):
+        Blog.query.filter_by(id=blog_id).delete()
+        db.session.commit()
+
+    @classmethod
     def increase_view_count(cls, blog_id):
         # TODO: don't query all fields
         blog = Blog.query.filter_by(id=blog_id).first()
         blog.view_count = Blog.view_count + 1
         db.session.commit()
 
-
-def list_blogs(category_id, labels, user_id, keywords,
+    @classmethod
+    def list(cls, category_id, labels, user_id, keywords,
                offset, limit):
-    # TODO: don't return all fields
-    blogs = Blog.query.order_by(desc('create_time')).all()
-    res = {
-        'items': [blog.serialize() for blog in blogs]
-    }
-    return res
+        # TODO: don't return all fields
+        # TODO: filter blog by labels & category & keywords
+        blogs = Blog.query.order_by(desc('create_time')).\
+            offset(offset).\
+            limit(limit).\
+            all()
 
+        return blogs
 
-def read_blog(blog_id):
-    if not BlogManager.exists(blog_id):
-        raise APIException('blog not fount', 400)
-    blog = Blog.query.filter_by(id=blog_id).first()
-    BlogManager.increase_view_count(blog_id)
+    @classmethod
+    def read(cls, blog_id):
+        if not BlogManager.exists(blog_id):
+            raise APIException('blog not fount', 400)
+        blog = Blog.query.filter_by(id=blog_id).first()
+        # TODO: filter self and admin read
+        BlogManager.increase_view_count(blog_id)
 
-    return blog.serialize()
+        return blog
 
+    @classmethod
+    def update(cls, blog_id, **kw):
+        if not BlogManager.exists(blog_id):
+            raise APIException('blog not found', 400)
 
-def create_blog(title, content, category_id):
-    blog = BlogManager.create(title, content, category_id,
-                       current_user.id)
-    return blog.serialize()
+        blog = Blog.query.filter_by(id=blog_id).first()
 
+        for k in kw:
+            setattr(blog, k, kw[k])
+        db.session.commit()
 
-def update_blog(blog_id, **kw):
-    if not BlogManager.exists(blog_id):
-        raise APIException('blog not found', 400)
-
-    blog = Blog.query.filter_by(id=blog_id).first()
-
-    for k in kw:
-        setattr(blog, k, kw[k])
-    db.session.commit()
-
-    return blog.serialize()
+        return blog
 
 
 class CategoryManager(object):
@@ -81,18 +83,83 @@ class CategoryManager(object):
         Category.query.filter_by(**kw).delete()
         db.session.commit()
 
+    @classmethod
+    def exists(cls, name):
+        exists = db.session.query(Category.id).filter_by(name=name).first()
+        return bool(exists)
 
-def create_category(name, index, **kw):
-    ret = db.session.query(Category.id).filter_by(name=name).first()
-    if ret:
-        raise APIException(u'分类 [{0}] 已存在'.format(name), 400)
+    @classmethod
+    def create(cls, name, index, user_id):
+        cg = Category(
+            name=name,
+            user_id=user_id,
+            index=index
+        )
+        db.session.add(cg)
+        db.session.commit()
 
-    cg = Category(
-        name=name,
-        user_id=current_user.id,
-        index=index
-    )
-    db.session.add(cg)
-    db.session.commit()
+        return cg
 
-    return cg.serialize()
+    @classmethod
+    def list(cls):
+        cgs = Category.query.order_by('index').all()
+        return cgs
+
+
+class LabelManager(object):
+
+    @classmethod
+    def list(cls):
+        labels = Label.query.order_by(desc('create_time')).all()
+        return labels
+
+    @classmethod
+    def create(cls, user_id, name):
+        label = Label(user_id=user_id, name=name)
+        db.session.add(label)
+        db.session.commit()
+
+        return label
+
+    @classmethod
+    def delete(cls, label_id):
+        Label.query.filter_by(id=label_id).delete()
+        db.session.commit()
+
+    @classmethod
+    def exists(cls, name):
+        exists = db.session.query(Label.id).filter_by(name=name).first()
+        return bool(exists)
+
+
+class CommentManager(object):
+
+    @classmethod
+    def list(cls, limit, offset):
+        comments = Comment.query.offset(offset).limit(limit).all()
+        return comments
+
+    @classmethod
+    def list_blog_comments(cls, blog_id, limit, offset):
+        comments = Comment.query. \
+            filter_by(blog_id=blog_id). \
+            offset(offset). \
+            limit(limit). \
+            all()
+
+        return comments
+
+    @classmethod
+    def create(cls, user_id, blog_id, content):
+        comment = Comment(user_id=user_id,
+                          blog_id=blog_id,
+                          content=content
+                          )
+        db.session.add(comment)
+        db.session.commit()
+        return comment
+
+    @classmethod
+    def delete(cls, comment_id):
+        Comment.query.filter_by(id=comment_id).delete()
+        db.session.commit()

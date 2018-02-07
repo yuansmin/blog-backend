@@ -24,10 +24,7 @@ class UserManager(object):
     @classmethod
     def list(cls):
         users = User.query.order_by(desc('sign_up_time')).all()
-        res = {
-            'items': [user.serialize() for user in users]
-        }
-        return res
+        return users
 
     @classmethod
     def login(cls, email, password):
@@ -38,15 +35,11 @@ class UserManager(object):
         result = login_user(user)
         user.last_login_time = datetime.now()
         db.session.commit()
-        return user.serialize()
+        return user
 
     @classmethod
     def create_user(cls, email, password, name, phone_number,\
                     gender, age):
-        user = User.query.filter_by(email=email).first()
-        if user:
-            raise APIException(u'该邮箱已被注册', 400)
-
         user = User(email=email,
                     password=password,
                     name=name,
@@ -58,19 +51,9 @@ class UserManager(object):
         db.session.add(user)
         db.session.commit()
 
-        return user.serialize()
+        return user
 
     @classmethod
     def change_password(cls, user, old_password, new_password):
-        if not user.check_passowrd(old_password):
-            raise APIException(u'密码错误', 400)
-
         user.password = new_password
         db.session.commit()
-
-    @classmethod
-    def change_cur_user_password_and_logout(cls, old_password,
-                                            new_password):
-        UserManager.change_password(current_user, old_password,
-                                    new_password)
-        logout_user()

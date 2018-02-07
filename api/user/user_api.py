@@ -3,12 +3,14 @@
 __author__ = 'fancy'
 __mtime__ = '2018/1/31'
 """
+from flask_login import current_user
 from flask_login import login_required
 from flask_login import logout_user
 from flask_restful import reqparse
 
 from api import api
 from app import json_response
+from app import APIException
 from .user import UserManager
 
 
@@ -20,7 +22,7 @@ def login():
         add_argument('password', required=True).\
         parse_args()
 
-    return UserManager.login(**args), 200
+    return UserManager.login(**args).serialize(), 200
 
 
 @api.route('/users/logout', methods=['GET'])
@@ -33,7 +35,11 @@ def logout():
 @login_required
 @json_response
 def list_users():
-    return UserManager.list(), 200
+    users = UserManager.list()
+    res = {
+        'items': [user.serialize() for user in users]
+    }
+    return res, 200
 
 
 @api.route('/users', methods=['POST'])
@@ -48,7 +54,11 @@ def create_user_api():
         add_argument('age', type=int).\
         parse_args()
 
-    return UserManager.create_user(**args), 200
+    if UserManager.exists(email=args['email']):
+        raise APIException(u'该邮箱已被注册', 400)
+
+    user = UserManager.create_user(**args)
+    return user.serialize(), 201
 
 
 @api.route('/users/password', methods=['POST'])
@@ -60,5 +70,8 @@ def change_password():
         add_argument('new_password', required=True).\
         parse_args()
 
-    UserManager.change_cur_user_password_and_logout(**args)
+    user = current_user
+    if not user.check_passowrd(args['old_password']):
+        raise APIException(u'密码错误', 400)
 
+    UserManager.change_password(user, **args)

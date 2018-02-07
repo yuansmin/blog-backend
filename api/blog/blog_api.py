@@ -63,11 +63,11 @@ def update_blog_api(blog_id):
         parse_args()
 
     if not BlogManager.exists(blog_id):
-        raise APIException('blog %d not found' % blog_id, 404)
+        raise APIException('blog %s not found' % blog_id, 404)
 
     if args.get('category_id') and \
             not CategoryManager.exists(args['category_id']):
-        raise APIException('category %d not found' % args['category_id'], 404)
+        raise APIException('category %s not found' % args['category_id'], 404)
 
     blog = BlogManager.update(blog_id, **args)
     return blog.serialize(), 200

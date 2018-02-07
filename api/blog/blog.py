@@ -84,8 +84,8 @@ class CategoryManager(object):
         db.session.commit()
 
     @classmethod
-    def exists(cls, name):
-        exists = db.session.query(Category.id).filter_by(name=name).first()
+    def exists(cls, **kw):
+        exists = db.session.query(Category.id).filter_by(**kw).first()
         return bool(exists)
 
     @classmethod
@@ -127,8 +127,8 @@ class LabelManager(object):
         db.session.commit()
 
     @classmethod
-    def exists(cls, name):
-        exists = db.session.query(Label.id).filter_by(name=name).first()
+    def exists(cls, **kw):
+        exists = db.session.query(Label.id).filter_by(**kw).first()
         return bool(exists)
 
 

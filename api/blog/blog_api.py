@@ -75,6 +75,7 @@ def update_blog_api(blog_id):
 
 @api.route('/blogs/<int:blog_id>', methods=['DELETE'])
 @login_required
+@json_response
 def delete_blog_api(blog_id):
     BlogManager.delete(blog_id)
 
@@ -139,6 +140,7 @@ def create_label_api():
 
 @api.route('/labels/<int:label_id>', methods=['DELETE'])
 @login_required
+@json_response
 def delete_label(label_id):
     LabelManager.delete(label_id)
 
@@ -191,6 +193,7 @@ def create_comment_api(blog_id):
 
 @api.route('/comments/<int:comment_id>', methods=['DELETE'])
 @login_required
+@json_response
 def delete_comment_api(comment_id):
     CommentManager.delete(comment_id)
 

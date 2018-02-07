@@ -6,13 +6,11 @@ from flask_login import login_required
 
 from api import api
 from app import APIException
-from app import db
 from app import json_response
 from .blog import BlogManager
 from .blog import CategoryManager
 from .blog import CommentManager
 from .blog import LabelManager
-from .models import Comment
 
 
 @api.route('/blogs')

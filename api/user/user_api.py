@@ -74,4 +74,4 @@ def change_password():
     if not user.check_passowrd(args['old_password']):
         raise APIException(u'密码错误', 400)
 
-    UserManager.change_password(user, **args)
+    UserManager.change_password(user=user, **args)

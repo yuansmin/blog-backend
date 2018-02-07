@@ -44,7 +44,7 @@ def create_blog_api():
         add_argument('category_id', type=int).\
         parse_args()
     user_id = current_user.id
-    blog = BlogManager.create(user_id, **args)
+    blog = BlogManager.create(user_id=user_id, **args)
     return blog.serialize(), 201
 
 
@@ -105,7 +105,7 @@ def create_category_api():
         raise APIException(u'分类 [{0}] 已存在'.format(args['name']), 400)
 
     user_id = current_user.id
-    cg = CategoryManager.create(user_id, **args)
+    cg = CategoryManager.create(user_id=user_id, **args)
     return cg.serialize(), 201
 
 
@@ -167,7 +167,7 @@ def list_blog_comments_api(blog_id):
         add_argument('offset', type=int, default=0).\
         parse_args()
 
-    comments = CommentManager.list_blog_comments(blog_id, **args)
+    comments = CommentManager.list_blog_comments(blog_id=blog_id, **args)
     res = {
         'items': [c.serialize() for c in comments]
     }

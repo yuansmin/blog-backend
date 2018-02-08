@@ -4,12 +4,22 @@ from datetime import datetime
 from app import db
 
 
-blog_label = db.Table(
-    'blog_label',
-    db.Column('blog_id', db.Integer, db.ForeignKey('blogs.id')),
-    db.Column('label_id', db.Integer, db.ForeignKey('labels.id')),
-    db.Column('create_time', db.Integer, default=datetime.now),
-    )
+class BlogLabel(db.Model):
+    __tablename__ = 'blog_labels'
+
+    id = db.Column('id', db.Integer, primary_key=True),
+    blog_id = db.Column('blog_id', db.Integer, nullable=False),
+    label_id = db.Column('label_id', db.Integer, nullable=False),
+    create_time = db.Column('create_time', db.Integer, default=datetime.now)
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'blog_id': self.blog_id,
+            'label_id': self.label_id,
+            'create_time': format_time(self.create_time) if \
+                                        self.create_time else None
+        }
 
 
 class Blog(db.Model):
@@ -18,18 +28,13 @@ class Blog(db.Model):
     id = db.Column('id', db.Integer, primary_key=True)
     title = db.Column('title', db.String(200))
     content = db.Column('content', db.Text)
-    user_id = db.Column('user_id', db.Integer, db.ForeignKey('users.id'))
+    user_id = db.Column('user_id', db.Integer)
     create_time = db.Column('create_time', db.DateTime, default=datetime.now)
     published_time = db.Column('published_time', db.DateTime, default=None)
     is_published = db.Column('is_published', db.Boolean, default=False)
-    category_id = db.Column('category_id', db.Integer, db.ForeignKey('category.id'))
+    category_id = db.Column('category_id', db.Integer)
     view_count = db.Column('view_count', db.Integer, default=0)
     good_count = db.Column('good_count', db.Integer, default=0)
-    labels = db.relationship('Label', secondary=blog_label)
-
-    @staticmethod
-    def format_time(time):
-        return time.strftime('%Y-%m-%d %H:%M:%S') if time else None
 
     def serialize(self):
         return {
@@ -37,8 +42,9 @@ class Blog(db.Model):
             'title': self.title,
             'content': self.content,
             'user_id': self.user_id,
-            'create_time': self.format_time(self.create_time),
-            'published_time': self.format_time(self.published_time),
+            'create_time': format_time(self.create_time) if \
+                                        self.create_time else None,
+            'published_time': format_time(self.published_time),
             'is_published': self.is_published,
             'category_id': self.category_id,
             'view_count': self.view_count,
@@ -56,17 +62,14 @@ class Comment(db.Model):
     vote_count = db.Column('good_count', db.Integer, default=0)    # 点赞数, 可加可减
     create_time = db.Column('create_time', db.DateTime, default=datetime.now)
 
-    @staticmethod
-    def format_time(time):
-        return time.strftime('%Y-%m-%d %H:%M:%S') if time else None
-
     def serialize(self):
         return {
             'id': self.id,
             'content': self.content,
             'use_id': self.user_id,
             'blog_id': self.blog_id,
-            'create_time': self.format_time(self.create_time)
+            'create_time': format_time(self.create_time) if \
+                                        self.create_time else None
         }
 
 
@@ -78,16 +81,13 @@ class Label(db.Model):
     user_id = db.Column('user_id', db.Integer)
     create_time = db.Column('create_time', db.DateTime, default=datetime.now)
 
-    @staticmethod
-    def format_time(time):
-        return time.strftime('%Y-%m-%d %H:%M:%S') if time else None
-
     def serialize(self):
         return {
             'id': self.id,
             'name': self.name,
             'use_id': self.user_id,
-            'create_time': self.format_time(self.create_time)
+            'create_time':format_time(self.create_time) if \
+                                        self.create_time else None
         }
 
 
@@ -101,14 +101,14 @@ class Category(db.Model):
     user_id = db.Column('user_id', db.Integer)
     blog = db.relationship('Blog', backref='category')
 
-    @staticmethod
-    def format_time(time):
-        return time.strftime('%Y-%m-%d %H:%M:%S') if time else None
-
     def serialize(self):
         return {
             'id': self.id,
             'name': self.name,
             'use_id': self.user_id,
-            'create_time': self.format_time(self.create_time)
+            'create_time': format_time(self.create_time) if \
+                                        self.create_time else None
         }
+
+def format_time(time):
+    return time.strftime('%Y-%m-%d %H:%M:%S')

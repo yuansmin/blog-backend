@@ -5,12 +5,13 @@ from .models import Blog
 from .models import Category
 from .models import Comment
 from .models import Label
-from .models import blog_label
+from .models import BlogLabel
 from app import APIException
 from app import db
 
 
 class BlogManager(object):
+    # TODO: think a better way for manager
 
     @classmethod
     def create(cls, title, content, category_id, user_id):
@@ -23,6 +24,12 @@ class BlogManager(object):
         db.session.commit()
 
         return blog
+
+    @classmethod
+    def add_label(cls, blog_id, label_id):
+        blog_label = BlogLabel(blog_id=blog_id, label_id=label_id)
+        db.session.add(blog_label)
+        db.session.commit()
 
     @classmethod
     def exists(cls, blog_id):
@@ -108,11 +115,11 @@ class CategoryManager(object):
 
     @classmethod
     def check_usage(cls, category_id):
-        '''
+        """
 
         :param category_id:
         :return: list [(blog_id,)]
-        '''
+        """
         blogs = db.session.query(Blog.id).filter_by(category_id=category_id).all()
         return blogs
 
@@ -144,8 +151,8 @@ class LabelManager(object):
 
     @classmethod
     def check_usage(cls, label_id):
-        blogs = db.session.query(blog_label.c.blog_id).\
-            filter(blog_label.c.label_id==label_id).all()
+        blogs = db.session.query(BlogLabel.blog_id).\
+            filter_by(label_id=label_id).all()
         return blogs
 
 

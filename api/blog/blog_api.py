@@ -40,9 +40,21 @@ def create_blog_api():
         add_argument('title').\
         add_argument('content').\
         add_argument('category_id', type=int).\
+        add_argument('labels', type=list, action='append', default=[]).\
         parse_args()
     user_id = current_user.id
     blog = BlogManager.create(user_id=user_id, **args)
+
+    empty_label = []
+    for label_id in args['labels']:
+        if not LabelManager.exists(label_id=label_id):
+            empty_label.append(label_id)
+    if empty_label:
+        raise APIException('labels %s not found', empty_label)
+
+    for label_id in args['labels']:
+        LabelManager.create(blog.id, label_id)
+
     return blog.serialize(), 201
 
 

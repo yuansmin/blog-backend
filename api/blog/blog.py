@@ -5,6 +5,7 @@ from .models import Blog
 from .models import Category
 from .models import Comment
 from .models import Label
+from .models import blog_label
 from app import APIException
 from app import db
 
@@ -105,6 +106,16 @@ class CategoryManager(object):
         cgs = Category.query.order_by('index').all()
         return cgs
 
+    @classmethod
+    def check_usage(cls, category_id):
+        '''
+
+        :param category_id:
+        :return: list [(blog_id,)]
+        '''
+        blogs = db.session.query(Blog.id).filter_by(category_id=category_id).all()
+        return blogs
+
 
 class LabelManager(object):
 
@@ -130,6 +141,12 @@ class LabelManager(object):
     def exists(cls, **kw):
         exists = db.session.query(Label.id).filter_by(**kw).first()
         return bool(exists)
+
+    @classmethod
+    def check_usage(cls, label_id):
+        blogs = db.session.query(blog_label.c.blog_id).\
+            filter(blog_label.c.label_id==label_id).all()
+        return blogs
 
 
 class CommentManager(object):

@@ -7,7 +7,8 @@ from app import db
 blog_label = db.Table(
     'blog_label',
     db.Column('blog_id', db.Integer, db.ForeignKey('blogs.id')),
-    db.Column('label_id', db.Integer, db.ForeignKey('labels.id'))
+    db.Column('label_id', db.Integer, db.ForeignKey('labels.id')),
+    db.Column('create_time', db.Integer, default=datetime.now),
     )
 
 

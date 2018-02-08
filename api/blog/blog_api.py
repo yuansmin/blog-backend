@@ -112,6 +112,8 @@ def create_category_api():
 @login_required
 @json_response
 def delete_category(category_id):
+    if CategoryManager.check_usage(category_id):
+        raise APIException('category is being used', 403)
     CategoryManager.delete(id=category_id)
 
 
@@ -142,6 +144,8 @@ def create_label_api():
 @login_required
 @json_response
 def delete_label(label_id):
+    if LabelManager.check_usage(label_id):
+        raise APIException('label is being used', 403)
     LabelManager.delete(label_id)
 
 

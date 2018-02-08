@@ -14,6 +14,10 @@ class BlogManager(object):
     # TODO: think a better way for manager
 
     @classmethod
+    def save(cls):
+        db.session.commit()
+
+    @classmethod
     def create(cls, title, content, category_id, user_id):
         blog = Blog(title=title,
                     content=content,
@@ -21,7 +25,6 @@ class BlogManager(object):
                     user_id=user_id
                     )
         db.session.add(blog)
-        db.session.commit()
 
         return blog
 
@@ -29,7 +32,6 @@ class BlogManager(object):
     def add_label(cls, blog_id, label_id):
         blog_label = BlogLabel(blog_id=blog_id, label_id=label_id)
         db.session.add(blog_label)
-        db.session.commit()
 
     @classmethod
     def exists(cls, blog_id):
@@ -39,14 +41,12 @@ class BlogManager(object):
     @classmethod
     def delete(cls, blog_id):
         Blog.query.filter_by(id=blog_id).delete()
-        db.session.commit()
 
     @classmethod
     def increase_view_count(cls, blog_id):
         # TODO: don't query all fields
         blog = Blog.query.filter_by(id=blog_id).first()
         blog.view_count = Blog.view_count + 1
-        db.session.commit()
 
     @classmethod
     def list(cls, category_id, labels, user_id, keywords,

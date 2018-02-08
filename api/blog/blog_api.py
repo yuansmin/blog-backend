@@ -55,6 +55,7 @@ def create_blog_api():
 
     for label_id in labels:
         BlogManager.add_label(blog.id, label_id)
+    BlogManager.save()
 
     return blog.serialize(), 201
 

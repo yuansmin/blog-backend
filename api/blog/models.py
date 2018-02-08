@@ -7,9 +7,9 @@ from app import db
 class BlogLabel(db.Model):
     __tablename__ = 'blog_labels'
 
-    id = db.Column('id', db.Integer, primary_key=True),
-    blog_id = db.Column('blog_id', db.Integer, nullable=False),
-    label_id = db.Column('label_id', db.Integer, nullable=False),
+    id = db.Column('id', db.Integer, primary_key=True)
+    blog_id = db.Column('blog_id', db.Integer, nullable=False)
+    label_id = db.Column('label_id', db.Integer, nullable=False)
     create_time = db.Column('create_time', db.Integer, default=datetime.now)
 
     def serialize(self):
@@ -17,8 +17,8 @@ class BlogLabel(db.Model):
             'id': self.id,
             'blog_id': self.blog_id,
             'label_id': self.label_id,
-            'create_time': format_time(self.create_time) if \
-                                        self.create_time else None
+            'create_time': format_time(self.create_time) if\
+                self.create_time else None
         }
 
 
@@ -42,9 +42,10 @@ class Blog(db.Model):
             'title': self.title,
             'content': self.content,
             'user_id': self.user_id,
-            'create_time': format_time(self.create_time) if \
-                                        self.create_time else None,
-            'published_time': format_time(self.published_time),
+            'create_time': format_time(self.create_time) if\
+                self.create_time else None,
+            'published_time': format_time(self.published_time) if\
+                self.published_time else None,
             'is_published': self.is_published,
             'category_id': self.category_id,
             'view_count': self.view_count,
@@ -68,8 +69,8 @@ class Comment(db.Model):
             'content': self.content,
             'use_id': self.user_id,
             'blog_id': self.blog_id,
-            'create_time': format_time(self.create_time) if \
-                                        self.create_time else None
+            'create_time': format_time(self.create_time) if\
+                self.create_time else None
         }
 
 
@@ -86,8 +87,8 @@ class Label(db.Model):
             'id': self.id,
             'name': self.name,
             'use_id': self.user_id,
-            'create_time':format_time(self.create_time) if \
-                                        self.create_time else None
+            'create_time':format_time(self.create_time) if\
+                self.create_time else None
         }
 
 
@@ -99,15 +100,14 @@ class Category(db.Model):
     index = db.Column('index', db.Integer)
     create_time = db.Column('create_time', db.DateTime, default=datetime.now)
     user_id = db.Column('user_id', db.Integer)
-    blog = db.relationship('Blog', backref='category')
 
     def serialize(self):
         return {
             'id': self.id,
             'name': self.name,
             'use_id': self.user_id,
-            'create_time': format_time(self.create_time) if \
-                                        self.create_time else None
+            'create_time': format_time(self.create_time) if\
+                self.create_time else None
         }
 
 def format_time(time):

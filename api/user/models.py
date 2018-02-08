@@ -21,7 +21,6 @@ class User(UserMixin, db.Model):
     last_login_time = db.Column('last_login_time', db.DateTime, default=datetime.now)
     active = db.Column('active', db.Boolean, default=True)
     is_admin = db.Column('is_admin', db.Boolean, default=False)
-    blog= db.relationship('Blog', backref='user')
 
     @property
     def password(self):

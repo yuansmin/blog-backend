@@ -32,6 +32,7 @@ class Blog(db.Model):
     create_time = db.Column('create_time', db.DateTime, default=datetime.now)
     published_time = db.Column('published_time', db.DateTime, default=None)
     is_published = db.Column('is_published', db.Boolean, default=False)
+    labels = db.Column('labels', db.String(200), default='')    # 多个label以 , 隔开
     category_id = db.Column('category_id', db.Integer)
     view_count = db.Column('view_count', db.Integer, default=0)
     good_count = db.Column('good_count', db.Integer, default=0)
@@ -41,6 +42,7 @@ class Blog(db.Model):
             'id': self.id,
             'title': self.title,
             'content': self.content,
+            'labels': self.labels,
             'user_id': self.user_id,
             'create_time': format_time(self.create_time) if\
                 self.create_time else None,

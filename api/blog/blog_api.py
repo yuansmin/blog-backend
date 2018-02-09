@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from sqlalchemy import desc
 from flask_restful import reqparse
 from flask_login import current_user
 from flask_login import login_required
@@ -63,7 +62,7 @@ def create_blog_api():
 @api.route('/blogs/<int:blog_id>', methods=['GET'])
 @json_response
 def read_blog_api(blog_id):
-    return BlogManager.read(blog_id).serialize() , 200
+    return BlogManager.read(blog_id).serialize(), 200
 
 
 @api.route('/blogs/<int:blog_id>', methods=['POST'])

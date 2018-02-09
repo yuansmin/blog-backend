@@ -57,8 +57,23 @@ def create_user_api():
     if UserManager.exists(email=args['email']):
         raise APIException(u'该邮箱已被注册', 400)
 
-    user = UserManager.create_user(**args)
+    user = UserManager.create(**args)
     return user.serialize(), 201
+
+
+@api.route('/users/update', methods=['POST'])
+@login_required
+@json_response
+def update_user_api():
+    args = reqparse.RequestParser().\
+        add_argument('name').\
+        add_argument('phone_number').\
+        add_argument('gender', type=int).\
+        add_argument('age', type=int).\
+        parse_args()
+
+    user = UserManager.update(current_user, **args)
+    return user.serialize(), 200
 
 
 @api.route('/users/password', methods=['POST'])

@@ -41,6 +41,12 @@ TODO:
 -[ ] websockt message
 
 
+Blog labels 字段
+
+多个 label 以 "," 隔开。Model Label 的存在是
+
+
+
 API:
 
 所有 API 返回 JSON 格式数据

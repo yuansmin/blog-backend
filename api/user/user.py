@@ -38,7 +38,7 @@ class UserManager(object):
         return user
 
     @classmethod
-    def create_user(cls, email, password, name, phone_number,\
+    def create(cls, email, password, name, phone_number,\
                     gender, age):
         user = User(email=email,
                     password=password,
@@ -52,6 +52,26 @@ class UserManager(object):
         db.session.commit()
 
         return user
+
+    @classmethod
+    def update(cls, user, **kw):
+        """
+
+        :param user: User object
+        :param kw: must in [name, phone_number, gender, age]
+        :return: User
+        """
+
+        params = kw.copy()
+        for k in params:
+            if k not in ['name', 'phone_number', 'gender', 'age']:
+                params.pop(k)
+
+        for k in params:
+            setattr(user, k, params[k])
+        db.session.commit()
+        return user
+
 
     @classmethod
     def change_password(cls, user, old_password, new_password):

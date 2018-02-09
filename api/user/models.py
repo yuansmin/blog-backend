@@ -15,6 +15,9 @@ class User(UserMixin, db.Model):
     age = db.Column('age', db.Integer)
     gender = db.Column('gender', db.SmallInteger)   # (0, man) (1, woman)
     email = db.Column('email', db.String(200), unique=True)
+    description = db.Column('description', db.String(500))
+    avatar = db.Column('avatar', db.String(200))
+    avatar_large = db.Column('avatar_large', db.String(200))
     _password_hash = db.Column('password', db.String(500))
     phone_number = db.Column('phone_number', db.String(50), unique=True)
     sign_up_time = db.Column('sign_up_time', db.DateTime, default=datetime.now)
@@ -60,6 +63,9 @@ class User(UserMixin, db.Model):
             'gender': self.gender,
             'email': self.email,
             'phone_number': self.phone_number,
+            'description': self.description,
+            'avatar': self.avatar,
+            'avatar_large': self.avatar_large,
             'is_admin': self.is_admin,
             'sign_up_time': self.format_time(self.sign_up_time),
             'last_login_time': self.format_time(self.last_login_time)

@@ -50,6 +50,7 @@ def create_user_api():
         add_argument('password', required=True).\
         add_argument('name').\
         add_argument('phone_number').\
+        add_argument('description').\
         add_argument('gender', type=int).\
         add_argument('age', type=int).\
         parse_args()
@@ -70,6 +71,7 @@ def update_user_api():
         add_argument('phone_number').\
         add_argument('gender', type=int).\
         add_argument('age', type=int).\
+        add_argument('description').\
         parse_args()
 
     user = UserManager.update(current_user, **args)

@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
 
-from flask_login import current_user
 from flask_login import login_user
-from flask_login import logout_user
 from sqlalchemy import desc
 
 from app import db
@@ -38,16 +36,8 @@ class UserManager(object):
         return user
 
     @classmethod
-    def create(cls, email, password, name, phone_number,\
-                    gender, age):
-        user = User(email=email,
-                    password=password,
-                    name=name,
-                    phone_number=phone_number,
-                    gender=gender,
-                    age=age
-                    )
-
+    def create(cls, **kw):
+        user = User(**kw)
         db.session.add(user)
         db.session.commit()
 
@@ -63,8 +53,9 @@ class UserManager(object):
         """
 
         params = kw.copy()
-        for k in params:
-            if k not in ['name', 'phone_number', 'gender', 'age']:
+        for k in kw:
+            if k not in ['name', 'phone_number', 'gender', 'age', 'description',
+                         'avatar', 'avatar_large']:
                 params.pop(k)
 
         for k in params:

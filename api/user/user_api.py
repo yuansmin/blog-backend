@@ -48,7 +48,7 @@ def create_user_api():
     args = reqparse.RequestParser().\
         add_argument('email', required=True).\
         add_argument('password', required=True).\
-        add_argument('name').\
+        add_argument('name', required=True).\
         add_argument('phone_number').\
         add_argument('description').\
         add_argument('gender', type=int).\
@@ -62,12 +62,11 @@ def create_user_api():
     return user.serialize(), 201
 
 
-@api.route('/users/update', methods=['POST'])
+@api.route('/users/update', methods=['PATCH'])
 @login_required
 @json_response
 def update_user_api():
     args = reqparse.RequestParser().\
-        add_argument('name').\
         add_argument('phone_number').\
         add_argument('gender', type=int).\
         add_argument('age', type=int).\
@@ -78,7 +77,7 @@ def update_user_api():
     return user.serialize(), 200
 
 
-@api.route('/users/password', methods=['POST'])
+@api.route('/users/change-password', methods=['POST'])
 @login_required
 @json_response
 def change_password():

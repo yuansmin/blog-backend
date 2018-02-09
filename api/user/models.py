@@ -11,7 +11,7 @@ class User(UserMixin, db.Model):
     __tablename__ = 'users'
 
     id = db.Column('id', db.Integer, primary_key=True)
-    name = db.Column('name', db.String(200))
+    name = db.Column('name', db.String(200), unique=True)
     age = db.Column('age', db.Integer)
     gender = db.Column('gender', db.SmallInteger)   # (0, man) (1, woman)
     email = db.Column('email', db.String(200), unique=True)

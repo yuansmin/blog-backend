@@ -336,9 +336,43 @@ Path Parameters
 
 GET /api/users
 
+Response 200
+```
+{
+    "items": [
+        {
+            "id": 1,
+            "name": "xxx",
+            "age": 18,
+            "gender": 0,
+            "email": "xxx@xxx.com",
+            "phone_number": 12345678,
+            "description": "sssss",
+            "avatar": "/xx/xxx/xx",
+            "avatar_large": "/xx/xxx/xxx",
+            "is_admin": false,
+            "sign_up_time": "2017-12-30 10:50:00",
+            "last_login_time":  "2017-12-30 10:50:00",
+        }
+    ]
+}
+```
+
 2. Create User
 
 POST /api/users
+
+Body Parameters
+
+| Name | Type |Required | Default  | Description |
+| ---- | ---  | ------  | ---     | ---     |
+|name  |string|true     | -       | |
+|email |string|true     | -       | |
+|password  |string|true     | -       | |
+|phone_number|string|true     | -       | |
+|description|string|false     | -       | |
+|gender|int|false     | -       | 0 male, 1 female |
+|age  |int|false     | -       | |
 
 req
 ```
@@ -348,31 +382,109 @@ req
     "password": "123456",
     "gender": 1, # (0, male) (1, female) not Required 
     "age": 28   # not Required 
+    "description": ""
+}
+```
+
+Response 201
+
+```
+{
+    "id": 1,
+    "name": "xxx",
+    "age": 18,
+    "gender": 0,
+    "email": "xxx@xxx.com",
+    "phone_number": 12345678,
+    "description": "sssss",
+    "avatar": "/xx/xxx/xx",
+    "avatar_large": "/xx/xxx/xxx",
+    "is_admin": false,
+    "sign_up_time": "2017-12-30 10:50:00",
+    "last_login_time":  "2017-12-30 10:50:00",
 }
 ```
 
 3. Update User
 
-POST /api/users/<id>
+PATCH /api/users/update
 
-req
+Body Parameters
+
+| Name | Type |Required | Default  | Description |
+| ---- | ---  | ------  | ---     | ---     |
+|phone_number|string|true     | -       | |
+|description|string|false     | -       | |
+|gender|int|false     | -       | 0 male, 1 female |
+|age  |int|false     | -       | |
+|avatar|string|false     | -       | |
+
+
+Request 
 ```
 {
-    "name": "adam", # not Required 
     "gender": 1, # (0, male) (1, female) not Required 
     "age": 28   # not Required 
+    "description": "",
+    "avatar": ""
 }
 ```
 
-4. Delete User
+Response 200
+
+```
+{
+    "id": 1,
+    "name": "xxx",
+    "age": 18,
+    "gender": 0,
+    "email": "xxx@xxx.com",
+    "phone_number": 12345678,
+    "description": "sssss",
+    "avatar": "/xx/xxx/xx",
+    "avatar_large": "/xx/xxx/xxx",
+    "is_admin": false,
+    "sign_up_time": "2017-12-30 10:50:00",
+    "last_login_time":  "2017-12-30 10:50:00",
+}
+```
+
+4. Change Password
+
+POST /api/users/change-password
+
+| Name | Type |Required | Default  | Description |
+| ---- | ---  | ------  | ---     | ---     |
+|old_password|string|true     | -       | |
+|new_password|string|true     | -       | |
+
+Request
+```
+{
+    "old_password": "",
+    "new_password": ""
+}
+```
+
+logout after changed password
+
+
+5. Delete User
 
 DELETE /api/users/<id>
 
-5. Login
+6. Login
 
 POST /api/users/login
 
-req：
+Body Parameters
+
+| Name | Type |Required | Default  | Description |
+| ---- | ---  | ------  | ---     | ---     |
+|email|string|true     | -       | |
+|password|string|false     | -       | |
+
+Request
 ```json
 {
   "email": "xxxxx",
@@ -380,7 +492,26 @@ req：
 }
 ```
 
-6. Logout
+Response 200
+```
+{
+    "id": 1,
+    "name": "xxx",
+    "age": 18,
+    "gender": 0,
+    "email": "xxx@xxx.com",
+    "phone_number": 12345678,
+    "description": "sssss",
+    "avatar": "/xx/xxx/xx",
+    "avatar_large": "/xx/xxx/xxx",
+    "is_admin": false,
+    "sign_up_time": "2017-12-30 10:50:00",
+    "last_login_time":  "2017-12-30 10:50:00",
+}
+```
+
+
+7. Logout
 
 GET /api/users/logout
 

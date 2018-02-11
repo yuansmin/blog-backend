@@ -47,6 +47,7 @@ class BlogManager(object):
         # TODO: don't query all fields
         blog = Blog.query.filter_by(id=blog_id).first()
         blog.view_count = Blog.view_count + 1
+        db.session.commit()
 
     @classmethod
     def list(cls, category_id, labels, user_id, keywords,

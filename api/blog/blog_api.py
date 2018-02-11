@@ -62,7 +62,10 @@ def create_blog_api():
 @api.route('/blogs/<int:blog_id>', methods=['GET'])
 @json_response
 def read_blog_api(blog_id):
-    return BlogManager.read(blog_id).serialize(), 200
+    blog = BlogManager.read(blog_id)
+    if not blog:
+        raise APIException('blog not found', 404)
+    return blog.serialize(), 200
 
 
 @api.route('/blogs/<int:blog_id>', methods=['POST'])

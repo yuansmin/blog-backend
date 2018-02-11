@@ -4,6 +4,6 @@ Flask-SQLAlchemy==2.3.2
 requests==2.18.4
 Flask_script==2.0.6
 Flask_migrate==2.1.1
-flask_cache
-flask_mail
-Flask-RESTful
+flask_cache==0.13.1
+flask_mail==0.9.1
+Flask-RESTful==0.3.6

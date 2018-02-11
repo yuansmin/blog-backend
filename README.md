@@ -24,6 +24,12 @@ python manage.py db upgrade
 
 ```
 
+Create Superuser
+```
+python manage.py create_superuser
+# then type email and password
+```
+
 Run:
 ```
 python manage.py runserver  # running on 127.0.0.1:5000 Default  

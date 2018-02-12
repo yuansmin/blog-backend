@@ -2,6 +2,7 @@
 from datetime import datetime
 
 from app import db
+from utils import format_time
 
 
 class BlogLabel(db.Model):
@@ -44,9 +45,9 @@ class Blog(db.Model):
             'content': self.content,
             'labels': self.labels,
             'user_id': self.user_id,
-            'create_time': format_time(self.create_time) if\
+            'create_time': format_time(self.create_time) if
                 self.create_time else None,
-            'published_time': format_time(self.published_time) if\
+            'published_time': format_time(self.published_time) if
                 self.published_time else None,
             'is_published': self.is_published,
             'category_id': self.category_id,
@@ -71,7 +72,7 @@ class Comment(db.Model):
             'content': self.content,
             'use_id': self.user_id,
             'blog_id': self.blog_id,
-            'create_time': format_time(self.create_time) if\
+            'create_time': format_time(self.create_time) if
                 self.create_time else None
         }
 
@@ -89,7 +90,7 @@ class Label(db.Model):
             'id': self.id,
             'name': self.name,
             'use_id': self.user_id,
-            'create_time':format_time(self.create_time) if\
+            'create_time':format_time(self.create_time) if
                 self.create_time else None
         }
 
@@ -108,9 +109,7 @@ class Category(db.Model):
             'id': self.id,
             'name': self.name,
             'use_id': self.user_id,
-            'create_time': format_time(self.create_time) if\
+            'create_time': format_time(self.create_time) if
                 self.create_time else None
         }
 
-def format_time(time):
-    return time.strftime('%Y-%m-%d %H:%M:%S')

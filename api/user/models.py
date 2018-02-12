@@ -5,6 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from app import db
 from app import login_manager
+from utils import format_time
 
 
 class User(UserMixin, db.Model):
@@ -36,10 +37,6 @@ class User(UserMixin, db.Model):
     def check_passowrd(self, password):
         return check_password_hash(self._password_hash, password)
 
-    @staticmethod
-    def format_time(time):
-        return time.strftime('%Y-%m-%d %H:%M:%S') if time else None
-
     def get_id(self):
         return str(self.id)
 
@@ -67,11 +64,41 @@ class User(UserMixin, db.Model):
             'avatar': self.avatar,
             'avatar_large': self.avatar_large,
             'is_admin': self.is_admin,
-            'sign_up_time': self.format_time(self.sign_up_time),
-            'last_login_time': self.format_time(self.last_login_time)
+            'sign_up_time': format_time(self.sign_up_time) if
+                            self.sign_up_time else None,
+            'last_login_time': format_time(self.last_login_time) if
+                            self.last_login_time else None
         }
 
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.filter_by(id=int(user_id)).one_or_none()
+
+
+class UserGroup(db.Model):
+    __tabelname__ = 'user_group'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255))
+    scope = db.Column(db.String(255))   # check
+    create_time = db.Column(db.DateTime, default=datetime.now)
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'scope': self.scope,
+            'create_time': format_time(self.create_time) if
+                                    self.create_time else None,
+        }
+
+
+class GroupManager(db.Model):
+    __tablename__ = 'group_user'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer)
+    group_id = db.Column(db.Integer)
+    create_time = db.Column(db.DateTime, default=datetime.now)
+

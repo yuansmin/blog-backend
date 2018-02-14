@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import time
 from datetime import datetime
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -13,7 +14,7 @@ class User(UserMixin, db.Model):
 
     id = db.Column('id', db.Integer, primary_key=True)
     name = db.Column('name', db.String(200), unique=True)
-    age = db.Column('age', db.Integer)
+    birthday = db.Column('birthday', db.DateTime, default=None)
     gender = db.Column('gender', db.SmallInteger)   # (0, man) (1, woman)
     email = db.Column('email', db.String(200), unique=True)
     description = db.Column('description', db.String(500))
@@ -25,6 +26,17 @@ class User(UserMixin, db.Model):
     last_login_time = db.Column('last_login_time', db.DateTime, default=datetime.now)
     active = db.Column('active', db.Boolean, default=True)
     is_admin = db.Column('is_admin', db.Boolean, default=False)
+
+    @property
+    def age(self):
+        if not self.birthday:
+            return None
+
+        now = datetime.now()
+        user_age = now.year - self.birthday.year
+        if now.month < self.birthday.month:
+            user_age -= 1
+        return user_age
 
     @property
     def password(self):
@@ -57,6 +69,8 @@ class User(UserMixin, db.Model):
             'id': self.id,
             'name': self.name,
             'age': self.age,
+            'birthday': format_time(self.birthday) if
+                            self.birthday else None,
             'gender': self.gender,
             'email': self.email,
             'phone_number': self.phone_number,

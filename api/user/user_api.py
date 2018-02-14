@@ -3,6 +3,7 @@
 __author__ = 'fancy'
 __mtime__ = '2018/1/31'
 """
+from datetime import datetime
 from flask_login import current_user
 from flask_login import login_required
 from flask_login import logout_user
@@ -12,6 +13,7 @@ from api import api
 from app import json_response
 from app import APIException
 from .user import UserManager
+from utils import is_before_now
 
 
 @api.route('/users/login', methods=['POST'])
@@ -69,9 +71,22 @@ def update_user_api():
     args = reqparse.RequestParser().\
         add_argument('phone_number').\
         add_argument('gender', type=int).\
-        add_argument('age', type=int).\
+        add_argument('birthday').\
         add_argument('description').\
         parse_args()
+
+    if 'birthday' in args:
+        raw_birthday = args['birthday']
+        try:
+            args['birthday'] = datetime.strptime(
+                args['birthday'], '%Y-%m-%d %H:%M:%S')
+        except:
+            raise APIException(
+                'wrong birthday "{}", need "%Y-%m-%d %H:%M:%S"'.format(
+                    raw_birthday), 400)
+        if not is_before_now(raw_birthday):
+            raise APIException(
+                'wrong birthday "{}", can not be future'.format(raw_birthday), 400)
 
     user = UserManager.update(current_user, **args)
     return user.serialize(), 200

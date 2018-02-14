@@ -55,7 +55,7 @@ class UserManager(object):
         params = kw.copy()
         for k in kw:
             if k not in ['name', 'phone_number', 'gender', 'age', 'description',
-                         'avatar', 'avatar_large']:
+                         'avatar', 'avatar_large', 'birthday']:
                 params.pop(k)
 
         for k in params:

@@ -12,6 +12,7 @@ from flask_restful import reqparse
 from api import api
 from app import json_response
 from app import APIException
+from app import admin_required
 from .user import UserManager
 from utils import is_before_now
 
@@ -42,6 +43,15 @@ def list_users():
         'items': [user.serialize() for user in users]
     }
     return res, 200
+
+
+@api.route('/users/<int:user_id>', methods=['GET'])
+@json_response
+def read_user(user_id):
+    user = UserManager.get(id=user_id)
+    if not user:
+        raise APIException(u'用户不存在', 404)
+    return user.serialize()
 
 
 @api.route('/users', methods=['POST'])

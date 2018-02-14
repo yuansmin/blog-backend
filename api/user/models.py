@@ -34,7 +34,7 @@ class User(UserMixin, db.Model):
 
         now = datetime.now()
         user_age = now.year - self.birthday.year
-        if now.month < self.birthday.month:
+        if now.timetuple()[1:] < self.birthday.timetuple()[1:]:
             user_age -= 1
         return user_age
 

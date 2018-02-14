@@ -9,6 +9,7 @@ from functools import wraps
 from flask import Flask
 from flask import Response
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import current_user
 from flask_login import LoginManager
 from flask_mail import Mail
 from flask_cache import Cache
@@ -50,6 +51,19 @@ def json_response(f):
 
         return Response(response=res_body, status=res_code,
                         headers=res_headers, mimetype='application/json')
+
+    return wrapper
+
+
+def admin_required(f):
+
+    @wraps(f)
+    def wrapper(*args, **kw):
+        if not current_user.is_admin:
+            raise APIException(u'no permission', 403)
+
+        res = f(*args, **kw)
+        return res
 
     return wrapper
 

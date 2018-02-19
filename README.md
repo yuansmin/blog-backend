@@ -422,8 +422,7 @@ Body Parameters
 |phone_number|string|true     | -       | |
 |description|string|false     | -       | |
 |gender|int|false     | -       | 0 male, 1 female |
-|age  |int|false     | -       | |
-|avatar|string|false     | -       | |
+|birthday|string|false|-||
 
 
 Request 

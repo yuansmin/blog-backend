@@ -7,3 +7,4 @@ Flask_migrate==2.1.1
 flask_cache==0.13.1
 flask_mail==0.9.1
 Flask-RESTful==0.3.6
+pillow==5.0.0

@@ -5,7 +5,7 @@ __mtime__ = '2018/1/31'
 """
 import os.path
 
-BASE_DIR = os.path.dirname(__file__)
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(BASE_DIR, 'blog.db')
 SQLALCHEMY_TRACK_MODIFICATIONS = True
@@ -20,3 +20,5 @@ MAIL_DEFAULT_SENDER = 'spider-monitor@thecover.co'
 MAIL_USE_SSL = True
 HOST = 'http://localhost:5000'
 CACHE_TYPE = 'simple'
+STATIC_DIR = os.path.join(BASE_DIR, 'static')
+AVATAR_DIR = os.path.join(STATIC_DIR, 'avatar')

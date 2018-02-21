@@ -4,17 +4,20 @@ __author__ = 'fancy'
 __mtime__ = '2018/1/31'
 """
 from datetime import datetime
+from flask import request
 from flask_login import current_user
 from flask_login import login_required
 from flask_login import logout_user
 from flask_restful import reqparse
 
 from api import api
+from app import app
 from app import json_response
 from app import APIException
 from app import admin_required
-from .user import UserManager
+from utils import check_imgs
 from utils import is_before_now
+from .user import UserManager
 
 
 @api.route('/users/login', methods=['POST'])
@@ -79,10 +82,11 @@ def create_user_api():
 @json_response
 def update_user_api():
     args = reqparse.RequestParser().\
-        add_argument('phone_number').\
-        add_argument('gender', type=int).\
-        add_argument('birthday').\
-        add_argument('description').\
+        add_argument('phone_number', store_missing=False).\
+        add_argument('gender', type=int, store_missing=False).\
+        add_argument('birthday', store_missing=False).\
+        add_argument('description', store_missing=False).\
+        add_argument('name', store_missing=False).\
         parse_args()
 
     if 'birthday' in args:
@@ -105,7 +109,7 @@ def update_user_api():
 @api.route('/users/change-password', methods=['POST'])
 @login_required
 @json_response
-def change_password():
+def change_password_api():
     args = reqparse.RequestParser().\
         add_argument('old_password', required=True).\
         add_argument('new_password', required=True).\
@@ -116,3 +120,20 @@ def change_password():
         raise APIException(u'密码错误', 400)
 
     UserManager.change_password(user=user, **args)
+
+
+@api.route('/users/change-avatar', methods=['POST'])
+@login_required
+@json_response
+def change_avatar_api():
+    files = request.files.keys()
+    if not files:
+        raise APIException(u'请上传文件', 400)
+    image = request.files[files[0]]
+    if not check_imgs(image):
+        raise APIException(u'非法文件！', 400)
+    image.read(app.config['AVATAR_MAX_SIZE'])
+    if image.read(5):
+        raise APIException(u'文件超过 2M！', 400)
+    user = UserManager.change_avatar(current_user, image)
+    return user.serialize(), 200
